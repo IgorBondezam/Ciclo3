@@ -12,11 +12,11 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       // define association here
       Cliente.hasMany(models.Pedido);
-      
+
     }
   };
   Cliente.init({
-    Nome: DataTypes.STRING,
+    nome: DataTypes.STRING,
     endereco: DataTypes.STRING,
     cidade: DataTypes.STRING,
     uf: DataTypes.STRING,
