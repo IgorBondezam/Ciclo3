@@ -105,8 +105,8 @@ app.post('/itempedidos', async(req,res)=>{ //criar itens
 
 app.get('/listaclientes', async(req, res)=>{//lista de clientes
     await cliente.findAll({
-        //raw: true
-        order:[['clienteDesde', 'ASC']]
+        raw: true,
+        order:[["nome", "ASC"]]
     }).then(function(clientes){
         res.json({clientes})
     });
@@ -125,8 +125,8 @@ app.get('/listapedidos', async(req, res)=>{//lista de pedidos
     await pedido.findAll({
         //raw: true
         // order:[['clienteDesde', 'ASC']]
-    }).then(function(ped){
-        res.json({ped})
+    }).then(function(pedidos){
+        res.json({pedidos})
     });
 });
 
@@ -136,7 +136,12 @@ app.get('/pedidos/:id', async(req, res)=>{ //lista pedido por id
         return res.json({ped});
     })
 } )
-
+app.get('/pedidos/cliente/:ClienteId', async(req, res)=>{ //lista pedido por id
+    await pedido.findAll({where: {ClienteId: req.params.ClienteId}})
+    .then(ped=>{
+        return res.json({ped});
+    })
+} )
 //                                     listas servicos 
 //                  -------------------------------------------------------------
 
@@ -156,12 +161,12 @@ app.get('/ofertaservicos', async(req, res)=>{ //numero total de clientes
     });
 });
 
-app.get('/servico/:id', async(req, res)=>{ //lista servicos por id
-    await servico.findByPk(req.params.id)
-    .then(serv =>{
+app.get('/pedidos/:id/servico', async(req, res)=>{ //lista servicos por id
+    await itempedido.findAll({where: {PedidoId: req.params.id}})
+    .then(item =>{
         return res.json({
             error: false,
-            serv
+            item
         });
     }).catch(function(error){
         return res.status(400).json({
@@ -180,6 +185,21 @@ app.get('/listaitem', async(req, res)=>{//lista de item
         //raw: true
     }).then(function(item){
         res.json({item})
+    });
+});
+
+app.get('/servico/:id/pedidos', async(req, res)=>{ //lista servicos por id
+    await itempedido.findAll({where: {ServicoId: req.params.id}})
+    .then(item =>{
+        return res.json({
+            error: false,
+            item
+        });
+    }).catch(function(error){
+        return res.status(400).json({
+            error: true,
+            message: "Erro: não foi possivel conectar"
+        });
     });
 });
 
